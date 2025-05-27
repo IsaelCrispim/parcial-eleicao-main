@@ -6,8 +6,7 @@
     <title>Lista de Candidatos</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100">
-<input type="button" value="Adicionar um contato"">    
+<body class="bg-gray-100">    
 <div class="container mx-auto p-4">
         <h1 class="text-3xl font-bold mb-4">Lista de Candidatos</h1>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
