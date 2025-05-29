@@ -1,12 +1,10 @@
 <?php
 require_once './config/database/database.php'; // conexão com o banco
-
-// Se quiser, pode puxar a lista de candidatos aqui e exibir dinamicamente.
-// Por enquanto, deixei estático conforme seu exemplo.
+$candidatos = $conn->query("SELECT * FROM candidatos");
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,56 +17,46 @@ require_once './config/database/database.php'; // conexão com o banco
 
     <h1 class="text-3xl font-bold mb-4">Lista de Candidatos</h1>
 
+    <!-- Botão para acessar a página de votação -->
+<a href="/votacao.php" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-6 inline-block">
+  Votação
+</a>
+
+
     <!-- Botão para abrir o modal -->
     <button id="openModalBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-6">
       Adicionar Candidato
     </button>
 
+    <button id="openModalBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-6">
+      Votação
+    </button>
+
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <!-- Candidato 1 -->
-      <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <img src="https://via.placeholder.com/150" alt="Candidato 1" class="w-full h-48 object-cover" />
-        <div class="p-4">
-          <h2 class="text-xl font-bold mb-2">Nome do Candidato 1</h2>
-          <p class="text-gray-700 mb-1">Partido: Partido 1</p>
-          <p class="text-gray-700 mb-1">Votos: 5000</p>
-          <p class="text-gray-700 mb-4">Data da Eleição: 01/01/2024</p>
+      <?php while ($c = $candidatos->fetch_assoc()): ?>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS_nxitB3fKqirz4-y8qTRYiOYQKq5NkVv4qT_PNj-n1atgprnPnd3bxkzwseuGwtwWqE&usqp=CAU" alt="Candidato" class="w-full h-48 object-cover" />
+          <div class="p-4">
+            <h2 class="text-xl font-bold mb-2"><?= htmlspecialchars($c['nome']) ?></h2>
+            <p class="text-gray-700 mb-1">Partido: <?= htmlspecialchars($c['partido']) ?></p>
+            <p class="text-gray-700 mb-1">Votos: <?= $c['numero_votos'] ?></p>
+            <p class="text-gray-700 mb-4">Data da Eleição: <?= date("d/m/Y", strtotime($c['data_eleicao'])) ?></p>
+
+            <div class="flex justify-between">
+              <a href="/actions/editar_candidato.php?id=<?= $c['id'] ?>" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
+                Editar
+              </a>
+              <a href="/actions/remover_candidato.php?id=<?= $c['id'] ?>" onclick="return confirm('Tem certeza que deseja remover?')" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+                Remover
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
-      <!-- Candidato 2 -->
-      <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <img src="https://via.placeholder.com/150" alt="Candidato 2" class="w-full h-48 object-cover" />
-        <div class="p-4">
-          <h2 class="text-xl font-bold mb-2">Nome do Candidato 2</h2>
-          <p class="text-gray-700 mb-1">Partido: Partido 2</p>
-          <p class="text-gray-700 mb-1">Votos: 3000</p>
-          <p class="text-gray-700 mb-4">Data da Eleição: 01/01/2024</p>
-        </div>
-      </div>
-      <!-- Candidato 3 -->
-      <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <img src="https://via.placeholder.com/150" alt="Candidato 3" class="w-full h-48 object-cover" />
-        <div class="p-4">
-          <h2 class="text-xl font-bold mb-2">Nome do Candidato 3</h2>
-          <p class="text-gray-700 mb-1">Partido: Partido 3</p>
-          <p class="text-gray-700 mb-1">Votos: 7000</p>
-          <p class="text-gray-700 mb-4">Data da Eleição: 01/01/2024</p>
-        </div>
-      </div>
-      <!-- Candidato 4 -->
-      <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <img src="https://via.placeholder.com/150" alt="Candidato 4" class="w-full h-48 object-cover" />
-        <div class="p-4">
-          <h2 class="text-xl font-bold mb-2">Nome do Candidato 4</h2>
-          <p class="text-gray-700 mb-1">Partido: Partido 4</p>
-          <p class="text-gray-700 mb-1">Votos: 4500</p>
-          <p class="text-gray-700 mb-4">Data da Eleição: 01/01/2024</p>
-        </div>
-      </div>
+      <?php endwhile; ?>
     </div>
   </div>
 
-  <!-- Modal (começa escondido) -->
+  <!-- Modal para adicionar candidato -->
   <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg p-6 w-96 relative">
       <button id="closeModalBtn" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-xl">&times;</button>
@@ -126,3 +114,4 @@ require_once './config/database/database.php'; // conexão com o banco
 
 </body>
 </html>
+
